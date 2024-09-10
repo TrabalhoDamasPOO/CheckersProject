@@ -1,0 +1,344 @@
+package damas;
+
+public class Board {
+		//Legendas:
+		//x = Casa branca
+		//o = Casa preta
+		//b = Peça preta
+		//B = Dama preta
+		//w = Peça branca
+		//W = Dama branca
+		
+		//Fórmula matemática para selecionar um elemento da matriz
+		//Índice do elemento desejado = (m + j) + (i*col)
+		//Onde m é o endereço inicial do vetor, i é a linha desejada, j é a coluna desejada, e col é o número de colunas
+		//Considerando m como 0 temos: j + (i*col)
+		
+		//Reset
+		public static final String ANSI_RESET = "\u001B[0m";
+		
+		//Cores do foreground
+		public static final String ANSI_BLACK = "\u001B[30m";
+		public static final String ANSI_RED = "\u001B[31m";
+		public static final String ANSI_GREEN = "\u001B[32m";
+		public static final String ANSI_YELLOW = "\u001B[33m";
+		public static final String ANSI_BLUE = "\u001B[34m";
+		public static final String ANSI_PURPLE = "\u001B[35m";
+		public static final String ANSI_CYAN = "\u001B[36m";
+		public static final String ANSI_WHITE = "\u001B[37m";
+		
+		//Cores do background
+		public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+		public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+		public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+		public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+		public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+		public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+		public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+		public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+		
+		//Tamanho padrão do tabuleiro
+		//Padrão: 8x8
+		public static final int DEFAULT_SIZE = 8;
+		
+		//Tabuleiro vazio
+		/*char[] tabuleiro = {'x','o','x','o','x','o','x','o',
+							'o','x','o','x','o','x','o','x',
+							'x','o','x','o','x','o','x','o',
+							'o','x','o','x','o','x','o','x',
+							'x','o','x','o','x','o','x','o',
+							'o','x','o','x','o','x','o','x',
+							'x','o','x','o','x','o','x','o',
+							'o','x','o','x','o','x','o','x',};*/
+
+		private char[] tabuleiro = {'x','b','x','b','x','b','x','b',
+									'b','x','b','x','b','x','b','x',
+									'x','b','x','b','x','b','x','b',
+									'o','x','o','x','o','x','o','x',
+									'x','o','x','o','x','o','x','o',
+									'w','x','w','x','w','x','w','x',
+									'x','w','x','w','x','w','x','w',
+									'w','x','w','x','w','x','w','x'};
+		
+
+		
+		
+		//Ler uma matriz de char e imprimir o tabuleiro
+		public static void imprimirTabuleiro(char[] tabuleiro) {
+			for (int i = 0; i < 64; i++) {
+				switch (tabuleiro[i]) {
+				case 'x': //Casa branca
+					System.out.print(ANSI_WHITE+ANSI_WHITE_BACKGROUND+"| |"+ANSI_RESET);
+					break;
+				case 'o': //Casa preta
+					System.out.print(ANSI_BLACK+ANSI_BLACK_BACKGROUND+"| |"+ANSI_RESET);
+					break;
+				case 'w': //Peça branca
+					System.out.print(ANSI_WHITE+ANSI_BLACK_BACKGROUND+" ● "+ANSI_RESET);
+					break;
+				case 'b': //Peça preta
+					System.out.print(ANSI_YELLOW+ANSI_BLACK_BACKGROUND+" ● "+ANSI_RESET);
+					break;
+				case 'W': //Dama branca
+					System.out.print(ANSI_WHITE+ANSI_BLACK_BACKGROUND+" ◉ "+ANSI_RESET);
+					break;
+				case 'B': //Dama preta
+					System.out.print(ANSI_YELLOW+ANSI_BLACK_BACKGROUND+" ◉ "+ANSI_RESET);
+					break;
+				default:
+					break;
+				}
+				
+				if ((i+1) % 8 == 0) {
+					System.out.print(" "+((i+1)/8)+"\n"); //Enumerar e separar linhas
+					//System.out.print("\n"); //Separar linhas
+				}
+				
+			}
+			System.out.println(" 1  2  3  4  5  6  7  8\n"); //Enumerar colunas e separar o tabuleiro do resto da saída
+			//System.out.println("\n"); //Separar o tabuleiro do resto da saída
+			/*for (char c : tabuleiro) {
+
+			}*/
+		}
+
+
+		public char[] getTabuleiro() {
+			return tabuleiro;
+		}
+
+
+		public void setTabuleiro(char[] tabuleiro) {
+			this.tabuleiro = tabuleiro;
+		}
+		
+		//Retorna o valor contido na posição das coordenadas
+		public char getPosicao(int lin, int col) {
+			char tabuleiro[] = this.getTabuleiro();
+			char peca = tabuleiro[col + (lin*DEFAULT_SIZE)]; //O tabuleiro é quadrado, logo o número de colunas é igual ao número de linhas, e pode ser usado apenas um valor int
+			return peca;
+		}
+		
+		//Altera o valor na posição das coordenadas
+		public void setPosicao(int lin, int col, char c) {
+			char tabuleiro[] = this.getTabuleiro();
+			tabuleiro[col + (lin*DEFAULT_SIZE)] = c;
+			this.setTabuleiro(tabuleiro);
+		}
+		
+	    //Retorna a distância entre duas casas
+	    //Essa função só utiliza os valores de uma componente
+	    public static int getDist(int origem, int destino) { //(int linhaOrigem, int colunaOrigem, int linhaDestino, int colunaDestino) {
+	    	return Math.abs(destino - origem);
+	    }
+	    
+	    //Retorna a direção do movimento
+	    //Essa função retorna um vetor de int, contendo as direções da linha e da coluna respectivamente
+	    public static int[] getDir(int linhaOrigem, int colunaOrigem, int linhaDestino, int colunaDestino) {
+	    	int dir[] = {(linhaDestino - linhaOrigem), (colunaDestino - colunaOrigem)};
+	    	return dir;
+	    	//return linhaDestino - linhaOrigem;
+	    }
+	    
+	    //Verifica a quantidade de capturas disponíveis em casas adjacentes
+	    public int scanCapturasDisponiveis(int lin, int col, boolean whitePlayer) {
+	    	char tabuleiro[] = this.getTabuleiro();
+	    	int contador = 0; //Quantidade de capturas possíveis naquela posição
+	    	
+	    	char peca; //Casa aonde a função foi executada
+	    	char c; //Casa a ser avaliada
+	    	char c2; //Casa para onde a peça iria se movimentar se houvesse captura
+	    	
+	    	for (int i = -1; i <= 1; i += 2) { //Linha
+	    		for (int j = -1; j <= 1; j += 2) { //Coluna
+	    			//Verificar se as casas em questão estão dentro dos limites do tabuleiro
+	    			if ((col+j < 0) || (col+j > (DEFAULT_SIZE-1))) { //Verificar a coluna
+	    				continue; //Pular para a próxima iteração
+	    				
+	    			} else if ((lin+i < 0) || (lin+i > (DEFAULT_SIZE-1))) { //Verificar a linha
+	    				continue;
+	    				
+	    			}
+	    			if ((col+(2*j) < 0) || (col+(2*j) > (DEFAULT_SIZE-1))) { //Verificar a coluna
+	    				continue; //Pular para a próxima iteração
+	    				
+	    			} else if ((lin+(2*i) < 0) || (lin+(2*i) > (DEFAULT_SIZE-1))) { //Verificar a linha
+	    				continue;
+	    				
+	    			}
+	    			
+	    			//System.out.println(lin);
+	    			//System.out.println(col);
+	    			peca = tabuleiro[col + (lin*DEFAULT_SIZE)]; //Certificar que existe uma peça naquela posição
+	    			c = tabuleiro[(col+j) + ((lin+i)*DEFAULT_SIZE)];
+	    			c2 = tabuleiro[(col+(j*2)) + ((lin+(i*2))*DEFAULT_SIZE)];
+	    			if (c2 == 'o') { //Verificar se há espaço para realizar a captura
+		    			if ((whitePlayer) && ((peca == 'w') || (peca == 'W'))) {
+			    			if (c == 'b' || c == 'B') { //Verificar se a casa em questão possui uma peça adversária
+			    				contador++; //Somar 1 ao contador
+			    			}
+		    			} else if ((!whitePlayer) && ((peca == 'b') || (peca == 'B'))) {
+			    			if (c == 'w' || c == 'W') {
+			    				contador++;
+			    			}
+		    			}
+	    			}
+	    		}
+	    	}
+	    	//System.out.println(contador);
+	    	return contador;
+	    }
+	    
+	    //Verifica se a peça localizada na casa em questão é uma dama
+	    public boolean isKing(int lin, int col) {
+	    	char tabuleiro[] = this.tabuleiro;
+	    	char peca = tabuleiro[col + (lin*DEFAULT_SIZE)];
+	    	if ((peca == 'W') || (peca == 'B')) {
+	    		return true;
+	    	} else {
+	    		return false;
+	    	}
+	    }
+	    
+	    public boolean verificarObstaculos(int linhaOrigem, int colunaOrigem, int linhaDestino, int colunaDestino) {
+	    	char tabuleiro[] = this.tabuleiro;
+	    	int dir[] = getDir(linhaOrigem, colunaOrigem, linhaDestino, colunaDestino);
+	    	int distLinha = getDist(linhaOrigem, linhaDestino);
+	    	//int distColuna = getDist(colunaOrigem, colunaDestino);
+	    	int indice;
+	    	dir[0] = (int)(dir[0]/Math.abs(dir[0])); //Transformar os valores em 1 ou -1
+	    	dir[1] = (int)(dir[1]/Math.abs(dir[1]));
+	    	//System.out.println("Dir linha"+dir[0]); //DEBUG
+	    	//System.out.println("Dir coluna"+dir[1]); //DEBUG
+	    	for (int i = 1; i < distLinha; i++) {//(int i = 1; i < (colunaDestino + (linhaDestino*DEFAULT_SIZE)); i++) {
+	    		indice = (colunaOrigem+(i*dir[1])) + ((linhaOrigem+(i*dir[0]))*DEFAULT_SIZE);
+	    		if ((indice < 0) || (indice >= DEFAULT_SIZE*DEFAULT_SIZE)) {
+	    			return false;
+	    		}
+	    		if (tabuleiro[indice] != 'o') {
+	    			//System.out.println(linhaOrigem+(i*dir[0])); //DEBUG
+	    			//System.out.println(colunaOrigem+(i*dir[1])); //DEBUG
+	    			//System.out.println(indice);
+	    			//System.out.println(tabuleiro[indice]);
+	    			return false;
+	    		}
+	    	}
+	    	return true;
+	    }
+	    
+	    //Verifica se existe uma peça no índice1 e se a casa no índice2 está vazia
+	    private int validacaoCaptura(int indice1, int indice2, boolean whitePlayer) {
+	    	char tabuleiro[] = this.tabuleiro;
+	    	int contador = 0;
+    		if ((indice1 >= 0) && (indice1 < DEFAULT_SIZE*DEFAULT_SIZE) && (indice2 >= 0) && (indice2 < DEFAULT_SIZE*DEFAULT_SIZE)) {
+    			if (whitePlayer) {
+		    		if ((tabuleiro[indice1] == 'b') || (tabuleiro[indice1] == 'B')) {
+		    			if (tabuleiro[indice2] == 'o') {
+		    				contador++;
+		    			}
+		    		}
+    			} else {
+		    		if ((tabuleiro[indice1] == 'w') || (tabuleiro[indice1] == 'W')) {
+		    			if (tabuleiro[indice2] == 'o') {
+		    				contador++;
+		    			}
+		    		}
+    			}
+    		}
+    		return contador;
+	    }
+	    
+	    //Detectar capturas a distância
+	    public int scanCapturasDistantes(int lin, int col, boolean whitePlayer) {
+	    	//Realizar verificações somente se a peça na posição for uma dama
+	    	if (!isKing(lin, col)) {
+	    		//System.out.println("teste1");
+	    		return 0;
+	    	}
+	    	//Verificar se a cor da peça está correta
+	    	if (whitePlayer && (tabuleiro[col + (lin*DEFAULT_SIZE)] != 'W')) {
+	    		return 0;
+	    	} else if (!whitePlayer && (tabuleiro[col + (lin*DEFAULT_SIZE)] != 'B')) {
+	    		return 0;
+	    	}
+	    	
+	    	int dir[] = {1, 1};
+	    	int indice1; //Casa a ser inspecionada
+	    	int indice2; //Casa posterior, que seria o destino
+	    	int indiceAux; //Índice auxiliar para verificações
+	    	int contador = 0;
+	    	
+	    	//Verifica duas direções ao mesmo tempo
+	    	for (int i = 1; i < 6; i++) {
+	    		indice1 = (col+(i*dir[1])) + ((lin+(i*dir[0]))*DEFAULT_SIZE);
+	    		indice2 = (col+((i+1)*dir[1])) + ((lin+((i+1)*dir[0]))*DEFAULT_SIZE);
+	    		//Verificar se existe peça atrás sem ser a peça de origem
+	    		if (i > 1) {
+	    			indiceAux = (col+((i-1)*dir[1])) + ((lin+((i-1)*dir[0]))*DEFAULT_SIZE);
+	    			if ((indiceAux >= 0) && (indiceAux < DEFAULT_SIZE*DEFAULT_SIZE)) { //Evitar trabalhar com valores fora dos limites do tabuleiro
+		    			if (tabuleiro[indiceAux] == 'o') {
+		    				contador += validacaoCaptura(indice1, indice2, whitePlayer);
+		    			}
+	    			}
+	    		} else {
+	    			contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		}
+	    		//contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		
+	    		//Direção espelhada
+	    		indice1 = (col-(i*dir[1])) + ((lin-(i*dir[0]))*DEFAULT_SIZE);
+	    		indice2 = (col-((i+1)*dir[1])) + ((lin-((i+1)*dir[0]))*DEFAULT_SIZE);
+	    		//Mesma verificação, no entanto na direção espelhada
+	    		if (i > 1) {
+	    			indiceAux = (col-((i-1)*dir[1])) + ((lin-((i-1)*dir[0]))*DEFAULT_SIZE);
+	    			if ((indiceAux >= 0) && (indiceAux < DEFAULT_SIZE*DEFAULT_SIZE)) {
+		    			if (tabuleiro[indiceAux] == 'o') {
+		    				contador += validacaoCaptura(indice1, indice2, whitePlayer);
+		    			}
+	    			}
+	    		} else {
+	    			contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		}
+	    		//contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    	}
+	    	
+	    	//Mudança de direção
+	    	dir[1] = -1;
+	    	
+	    	//Verifica as outras duas direções restantes
+	    	for (int i = 1; i < 6; i++) {
+	    		indice1 = (col+(i*dir[1])) + ((lin+(i*dir[0]))*DEFAULT_SIZE);
+	    		indice2 = (col+((i+1)*dir[1])) + ((lin+((i+1)*dir[0]))*DEFAULT_SIZE);
+	    		//Verificar se existe peça atrás sem ser a peça de origem
+	    		if (i > 1) {
+	    			indiceAux = (col+((i-1)*dir[1])) + ((lin+((i-1)*dir[0]))*DEFAULT_SIZE);
+	    			if ((indiceAux >= 0) && (indiceAux < DEFAULT_SIZE*DEFAULT_SIZE)) {
+		    			if (tabuleiro[indiceAux] == 'o') {
+		    				contador += validacaoCaptura(indice1, indice2, whitePlayer);
+		    			}
+	    			}
+	    		} else {
+	    			contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		}
+	    		//contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		
+	    		//Direção espelhada
+	    		indice1 = (col-(i*dir[1])) + ((lin-(i*dir[0]))*DEFAULT_SIZE);
+	    		indice2 = (col-((i+1)*dir[1])) + ((lin-((i+1)*dir[0]))*DEFAULT_SIZE);
+	    		//Mesma verificação, no entanto na direção espelhada
+	    		if (i > 1) {
+	    			indiceAux = (col-((i-1)*dir[1])) + ((lin-((i-1)*dir[0]))*DEFAULT_SIZE);
+	    			if ((indiceAux >= 0) && (indiceAux < DEFAULT_SIZE*DEFAULT_SIZE)) {
+		    			if (tabuleiro[indiceAux] == 'o') {
+		    				contador += validacaoCaptura(indice1, indice2, whitePlayer);
+		    			}
+	    			}
+	    		} else {
+	    			contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    		}
+	    		//contador += validacaoCaptura(indice1, indice2, whitePlayer);
+	    	}
+	    	//System.out.println(contador); //DEBUG
+	    	return contador;
+	    }
+	}
