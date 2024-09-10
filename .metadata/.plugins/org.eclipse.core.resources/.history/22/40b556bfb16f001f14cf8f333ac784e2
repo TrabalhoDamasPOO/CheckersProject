@@ -144,7 +144,7 @@ public class Game {
 	                }
 	                
 	                if (!sequencia) { //Captura em sequência
-
+		                numberOfTurns++;
 		                changeShift();
 	                }
 	            } else {
@@ -308,7 +308,6 @@ public class Game {
     	} else {
     		currentPlayer = whitePlayer;
     	}
-        numberOfTurns++;
     }
 
     private void printFinalScores() {

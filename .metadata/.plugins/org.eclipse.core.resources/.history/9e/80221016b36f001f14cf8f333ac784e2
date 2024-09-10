@@ -118,8 +118,7 @@ public class Game {
             
 	        if ((peca == 'w' || peca == 'b' || peca == 'W' || peca == 'B') && (casaDestino == 'o')){
 	            // Verificar se a peça pertence ao jogador atual
-	            if ((peca == 'w' || peca == 'W') && currentPlayer.getColor() == Color.white ||
-	                (peca == 'b' || peca == 'B') && currentPlayer.getColor() == Color.black) {
+	            if (isAdversaria(peca, currentPlayer.getColor() == Color.white)) {
 	
 	                // Mover a peça para a nova posição
 	                board.setPosicao(linhaDestino, colunaDestino, peca);
@@ -144,7 +143,6 @@ public class Game {
 	                }
 	                
 	                if (!sequencia) { //Captura em sequência
-
 		                changeShift();
 	                }
 	            } else {
@@ -161,6 +159,10 @@ public class Game {
     private void printPlayerTurn() {
     	System.out.println("Turno: " + numberOfTurns);
         System.out.println(currentPlayer.getColor() == Color.white ? "É a vez do jogador Branco." : "É a vez do jogador Preto.");
+    }
+    
+    public boolean isAdversaria(char peca, boolean whitePlayer) {
+        return whitePlayer ? (peca == 'b' || peca == 'B') : (peca == 'w' || peca == 'W');
     }
     
     private boolean isValidMove(int linhaOrigem, int colunaOrigem, int linhaDestino, int colunaDestino) {

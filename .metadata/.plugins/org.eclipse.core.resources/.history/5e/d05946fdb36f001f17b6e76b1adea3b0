@@ -66,32 +66,42 @@ public class Board {
 		//Ler uma matriz de char e imprimir o tabuleiro
 		public static void imprimirTabuleiro(char[] tabuleiro) {
 			for (int i = 0; i < 64; i++) {
-		        System.out.print(getSimbolo(tabuleiro[i]));
-		        if ((i + 1) % 8 == 0) {
-		            System.out.println(" " + ((i + 1) / 8));
-		        }
-		    }
-		    System.out.println(" 1  2  3  4  5  6  7  8\n");
+				switch (tabuleiro[i]) {
+				case 'x': //Casa branca
+					System.out.print(ANSI_WHITE+ANSI_WHITE_BACKGROUND+"| |"+ANSI_RESET);
+					break;
+				case 'o': //Casa preta
+					System.out.print(ANSI_BLACK+ANSI_BLACK_BACKGROUND+"| |"+ANSI_RESET);
+					break;
+				case 'w': //Peça branca
+					System.out.print(ANSI_WHITE+ANSI_BLACK_BACKGROUND+" ● "+ANSI_RESET);
+					break;
+				case 'b': //Peça preta
+					System.out.print(ANSI_YELLOW+ANSI_BLACK_BACKGROUND+" ● "+ANSI_RESET);
+					break;
+				case 'W': //Dama branca
+					System.out.print(ANSI_WHITE+ANSI_BLACK_BACKGROUND+" ◉ "+ANSI_RESET);
+					break;
+				case 'B': //Dama preta
+					System.out.print(ANSI_YELLOW+ANSI_BLACK_BACKGROUND+" ◉ "+ANSI_RESET);
+					break;
+				default:
+					break;
+				}
+				
+				if ((i+1) % 8 == 0) {
+					System.out.print(" "+((i+1)/8)+"\n"); //Enumerar e separar linhas
+					//System.out.print("\n"); //Separar linhas
+				}
+				
+			}
+			System.out.println(" 1  2  3  4  5  6  7  8\n"); //Enumerar colunas e separar o tabuleiro do resto da saída
+			//System.out.println("\n"); //Separar o tabuleiro do resto da saída
+			/*for (char c : tabuleiro) {
+
+			}*/
 		}
-		
-		private static String getSimbolo(char c) {
-		    switch (c) {
-		        case 'x':
-		            return ANSI_WHITE + ANSI_WHITE_BACKGROUND + "| |" + ANSI_RESET;
-		        case 'o':
-		            return ANSI_BLACK + ANSI_BLACK_BACKGROUND + "| |" + ANSI_RESET;
-		        case 'w':
-		            return ANSI_WHITE + ANSI_BLACK_BACKGROUND + " ● " + ANSI_RESET;
-		        case 'b':
-		            return ANSI_YELLOW + ANSI_BLACK_BACKGROUND + " ● " + ANSI_RESET;
-		        case 'W':
-		            return ANSI_WHITE + ANSI_BLACK_BACKGROUND + " ◉ " + ANSI_RESET;
-		        case 'B':
-		            return ANSI_YELLOW + ANSI_BLACK_BACKGROUND + " ◉ " + ANSI_RESET;
-		        default:
-		            return "   ";
-		    }
-		}
+
 
 		public char[] getTabuleiro() {
 			return tabuleiro;

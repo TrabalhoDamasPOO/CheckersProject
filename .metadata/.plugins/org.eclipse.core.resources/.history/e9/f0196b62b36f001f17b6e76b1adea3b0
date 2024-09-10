@@ -118,8 +118,7 @@ public class Game {
             
 	        if ((peca == 'w' || peca == 'b' || peca == 'W' || peca == 'B') && (casaDestino == 'o')){
 	            // Verificar se a peça pertence ao jogador atual
-	            if ((peca == 'w' || peca == 'W') && currentPlayer.getColor() == Color.white ||
-	                (peca == 'b' || peca == 'B') && currentPlayer.getColor() == Color.black) {
+	            if (isAdversaria(peca, currentPlayer.getClass() == Color.white)) {
 	
 	                // Mover a peça para a nova posição
 	                board.setPosicao(linhaDestino, colunaDestino, peca);
@@ -156,6 +155,10 @@ public class Game {
         } else {
             System.out.println("Movimento não permitido.");
         }
+    }
+    
+    public boolean isAdversaria(char peca, boolean whitePlayer) {
+        return whitePlayer ? (peca == 'b' || peca == 'B') : (peca == 'w' || peca == 'W');
     }
 
     private void printPlayerTurn() {

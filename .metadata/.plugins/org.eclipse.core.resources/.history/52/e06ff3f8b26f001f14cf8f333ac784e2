@@ -144,7 +144,6 @@ public class Game {
 	                }
 	                
 	                if (!sequencia) { //Captura em sequência
-
 		                changeShift();
 	                }
 	            } else {
