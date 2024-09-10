@@ -1,0 +1,5 @@
+package damas.enums;
+
+public enum Color {
+	white, black;
+}
